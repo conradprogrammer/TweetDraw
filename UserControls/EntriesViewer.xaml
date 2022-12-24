@@ -1,0 +1,218 @@
+﻿<UserControl x:Class="TweetDraw.UserControls.PagingGrid"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:uc="clr-namespace:TweetDraw.UserControls"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800"
+             >
+    <UserControl.Resources>
+        <uc:IndexConverter x:Key="IndexConverter"/>
+        <uc:CounterCoverter x:Key="CounterConverter"/>
+        <uc:UrlTagConverter x:Key="TagConverter"/>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <uc:LabeledTextBox Placeholder="Search" HorizontalAlignment="Right" MinWidth="200" Margin="0 10" TextChanged="SearchKeyChanged"/>
+        <ListView Name="list" Grid.Row="1" VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch" ItemsSource="{Binding DisplayList}" Background="{StaticResource bBack}">
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ListViewItem">
+                                <Grid>
+                                    <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                        SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                </Grid>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ListView.ItemContainerStyle>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid VerticalAlignment="Center">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="50" />
+                            <ColumnDefinition Width="2*" />
+                            <ColumnDefinition Width="2*" />
+                            <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.Resources>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Margin" Value="5,0" />
+                                <Setter Property="Foreground" Value="White" />
+                            </Style>
+                            <Style TargetType="Border">
+                                <Setter Property="BorderThickness" Value="1" />
+                                <Setter Property="Background" Value="{StaticResource bBack}"/>
+                                <Setter Property="BorderBrush" Value="{StaticResource bBorder}"/>
+                            </Style>
+                        </Grid.Resources>
+                        <Border Grid.Column="0" >
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center">
+                                <TextBlock.Text>
+                                    <MultiBinding Converter="{StaticResource IndexConverter}">
+                                        <Binding RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type ListViewItem}}"/>
+                                        <Binding Path="StartPos" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}"/>
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                        </Border>
+                        <Border Grid.Column="1" >
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="80"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <Viewbox Margin="10" Grid.RowSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                    <Ellipse Width="50" Height="50">
+                                        <Ellipse.Fill>
+                                            <ImageBrush ImageSource="{Binding Img}"/>
+                                        </Ellipse.Fill>
+                                    </Ellipse>
+                                </Viewbox>
+                                <TextBlock VerticalAlignment="Bottom" Foreground="{StaticResource bLight}" FontWeight="SemiBold" Grid.Column="1" Text="{Binding Name}"/>
+                                <TextBlock Grid.Column="1" Foreground="{StaticResource bBorder}" Grid.Row="1" Text="{Binding UserName, StringFormat=@{0}}"/>
+                            </Grid>
+                        </Border>
+                        <Border Grid.Column="2">
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding Created, StringFormat={}{0:hh:mm tt ∙ MMM dd, yyyy}}" />
+                        </Border>
+                        <Border Grid.Column="3">
+                            <Button VerticalAlignment="Center" Style="{StaticResource ActionBtn}" Click="ViewEntry">
+                                <Button.Tag>
+                                    <MultiBinding Converter="{StaticResource TagConverter}">
+                                        <Binding Path="UserName"/>
+                                        <Binding Path="RetweetId"/>
+                                    </MultiBinding>
+                                </Button.Tag>
+                                View Entry
+                            </Button>
+                        </Border>
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+            <ListView.Template>
+                <ControlTemplate>
+                    <Grid HorizontalAlignment="Stretch">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Grid Grid.Row="0" VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="51" />
+                                <ColumnDefinition Width="2*" />
+                                <ColumnDefinition Width="2*" />
+                                <ColumnDefinition Width="1*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.Resources>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Margin" Value="5" />
+                                    <Setter Property="Foreground" Value="{StaticResource bLight}" />
+                                    <Setter Property="FontWeight" Value="Bold" />
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                </Style>
+                                <Style TargetType="Border">
+                                    <Setter Property="BorderThickness" Value="1" />
+                                    <Setter Property="BorderBrush" Value="{StaticResource bBorder}" />
+                                    <Setter Property="Background" Value="{StaticResource bBack}" />
+                                </Style>
+                            </Grid.Resources>
+                            <Border Grid.Column="0">
+                                <TextBlock >#</TextBlock>
+                            </Border>
+                            <Border Grid.Column="1">
+                                <TextBlock >User</TextBlock>
+                            </Border>
+                            <Border Grid.Column="2">
+                                <TextBlock >Entry Date</TextBlock>
+                            </Border>
+                            <Border Grid.Column="3">
+                                <TextBlock >Action</TextBlock>
+                            </Border>
+                        </Grid>
+                        <Border Grid.Row="1" BorderBrush="{StaticResource bBorder}" BorderThickness="1">
+                            <Grid>
+                                <TextBlock Margin="10" HorizontalAlignment="Center" Foreground="{StaticResource bBorder}">Matched Data not exist</TextBlock>
+                                <ItemsPresenter/>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </ControlTemplate>
+            </ListView.Template>
+        </ListView>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel  Orientation="Horizontal" Margin="10">
+                <TextBlock VerticalAlignment="Center" Text="{Binding Count, StringFormat=Total Entries: {0}}"></TextBlock>
+                <uc:LabeledList Label="Entity Count per Page:" Value="0" x:Name="cmdPageSize" ItemList="{Binding PageSizes}" SelectChanged="PageSizeChanged" Margin="20 0 0 0" Width="280"/>
+            </StackPanel>
+            <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="10 10">
+                <StackPanel.Resources>
+                    <ControlTemplate x:Key="pageBtn" TargetType="Button">
+                        <ControlTemplate.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="BorderBrush" Value="{StaticResource bBorder}"/>
+                                <Setter Property="BorderThickness" Value="1"/>
+                                <Setter Property="Width" Value="25"/>
+                                <Setter Property="CornerRadius" Value="5"/>
+                            </Style>
+                        </ControlTemplate.Resources>
+                        <Border Background="{TemplateBinding Background}">
+                            <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                    <Style TargetType="Button">
+                        <Setter Property="Template" Value="{DynamicResource pageBtn}"/>
+                        <Setter Property="Background" Value="{StaticResource bBack}"/>
+                        <Style.Triggers>
+                            <DataTrigger Value="True">
+                                <DataTrigger.Binding>
+                                    <MultiBinding UpdateSourceTrigger="PropertyChanged">
+                                        <MultiBinding.Converter>
+                                            <uc:IsCurrentPageConverter/>
+                                        </MultiBinding.Converter>
+                                        <Binding RelativeSource="{RelativeSource Self}" Path="Tag"/>
+                                        <Binding Path="CurrentPage"/>
+                                    </MultiBinding>
+                                </DataTrigger.Binding>
+                                <Setter Property="Background" Value="{DynamicResource bGrey}"/>
+                            </DataTrigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Background" Value="{StaticResource bDark}"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{StaticResource bBorder}"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </StackPanel.Resources>
+                <Button Name="btnFirst" Template="{StaticResource pageBtn}" Content="≪" Click="GotoFirst"/>
+                <Button Name="btnPrev" Content="&lt;" Click="Prev"/>
+                <Button Name="btn1" Tag="1" Content="1" Click="GotoPage"/>
+                <Button Name="btn2" Tag="2" Content="2" Click="GotoPage"/>
+                <Button Name="btn3" Tag="3" Content="3" Click="GotoPage"/>
+                <Button Name="btn4" Tag="4" Content="4" Click="GotoPage"/>
+                <Button Name="btn5" Tag="5" Content="5" Click="GotoPage"/>
+                <Button Name="btnNext" Content="&gt;" Click="Next"/>
+                <Button Name="btnLast" Content="≫" Click="GotoLast"/>
+            </StackPanel>
+        </Grid>
+
+    </Grid>
+</UserControl>

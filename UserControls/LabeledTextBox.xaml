@@ -1,0 +1,43 @@
+﻿<UserControl x:Class="TweetDraw.UserControls.LabeledTextBox"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:TweetDraw.UserControls"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <local:BoolToVisibilityConverter x:Key="InputToVisibility"/>
+        <local:ObjectToVisibiltyCoverter x:Key="ObjectToVisibility"/>
+        <Style TargetType="local:LabeledTextBox">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Border CornerRadius="5" BorderBrush="{StaticResource bBorder}" Background="{StaticResource bDarkBack}" BorderThickness="1">
+                            <ContentControl>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Name="label" Text="{Binding Label}" Margin="1" Padding="10 5" Background="{StaticResource bBack}" >
+                                        <TextBlock.Visibility>
+                                            <Binding Converter="{StaticResource ObjectToVisibility}" ElementName="label" Path="Text" BindsDirectlyToSource="True" />
+                                        </TextBlock.Visibility>
+                                    </TextBlock>
+                                    <TextBlock Grid.Column="1" VerticalAlignment="Center" Padding="10 5" Text="{Binding Placeholder}" Foreground="{StaticResource bBorder}" FontStyle="Italic">
+                                        <TextBlock.Visibility>
+                                            <Binding Converter="{StaticResource InputToVisibility}"  ElementName="inputText" Path="Text.IsEmpty" BindsDirectlyToSource="True" />
+                                        </TextBlock.Visibility>
+                                    </TextBlock>
+                                    <TextBox VerticalAlignment="Center" Padding="10 5" Grid.Column="1" Name="inputText" Background="Transparent"  Foreground="{StaticResource bLight}" BorderThickness="0"
+                                             Text="{Binding Path=Value, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" TextChanged="inputText_TextChanged"/>
+                                </Grid>
+                            </ContentControl>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+</UserControl>

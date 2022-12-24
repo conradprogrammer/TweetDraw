@@ -1,0 +1,229 @@
+﻿<Window x:Class="TweetDraw.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:uc="clr-namespace:TweetDraw.UserControls"
+        mc:Ignorable="d"
+        Title="Tweet Drawer"
+        Height="925" Width="1000"
+        >
+    <Grid Background="{StaticResource bBack}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Margin="20" Orientation="Horizontal" HorizontalAlignment="Right">
+            <TextBlock Style="{StaticResource Title}" Padding="15 0">Draw Verification:</TextBlock>
+            <uc:LabeledTextBox Placeholder="Enter text" FontSize="20" Width="250" Height="40" />
+            <Button Style="{StaticResource BlueBtn}" Margin="-7 0 0 0">VERIFY</Button>
+        </StackPanel>
+        <TextBlock Grid.Row="1" Style="{StaticResource Title}" HorizontalAlignment="Center">Retweet Picker 🏆</TextBlock>
+        <TabControl Grid.Row="2" VerticalAlignment="Stretch" Background="{StaticResource bBack}" Margin="20" BorderBrush="{StaticResource bBorder}">
+            <TabItem Name="tab1" Header="Step 1 : Options">
+                <Grid Margin="15">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="150"/>
+                        </Grid.ColumnDefinitions>
+                        <uc:LabeledTextBox x:Name="txtUrl" FontSize="20" Placeholder="Tweet URL(eg. https://tweet.com/../status/..)" Height="40"/>
+                        <Button Style="{StaticResource BlueBtn}" Margin="-7 0 0 0" Grid.Column="1" Click="LoadTweet" IsEnabled="{Binding NotLoading}">Load Tweet</Button>
+                    </Grid>
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Border CornerRadius="6" Margin="0,20" Padding="10" BorderBrush="{StaticResource bBorder}" BorderThickness="1">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Style="{StaticResource Title}" HorizontalAlignment="Center">Tweet Preview</TextBlock>
+                                <ScrollViewer Grid.Row="1" CanContentScroll="True" VerticalScrollBarVisibility="Auto">
+                                    <uc:TweetPreview Grid.Row="1" x:Name="preview"/>
+                                </ScrollViewer>
+                            </Grid>
+                        </Border>
+                        <Grid Grid.Column="1">
+                            <Border Background="{StaticResource bGrey}" CornerRadius="6" Margin="20 20 0 20" Padding="15">
+                                <ScrollViewer VerticalScrollBarVisibility="Auto" >
+                                    <StackPanel Margin="5">
+                                        <TextBlock Style="{StaticResource Title}">⚙ Setting:</TextBlock>
+                                        <TextBlock Background="{StaticResource bBorder}" Height="2" Margin="0 5"/>
+                                        <uc:LabeledInputInt x:Name="txtWinnerCount" Label="WinnerCount:" Value="1" Height="40" Margin="0 5"/>
+                                        <uc:LabeledTextBox x:Name="txtMustFollow" Label="Must Follow:" Height="40" Placeholder="@Merl, @TWPick, @..." Margin="0 5"/>
+                                        <TextBlock Style="{StaticResource Title}">🤵 User profile:</TextBlock>
+                                        <TextBlock FontSize="15" Foreground="{StaticResource bBorder}">Pr
+                                            spam/fake accounts from being drawn.</TextBlock>
+                                        <TextBlock Background="{StaticResource bBorder}" Height="2" Margin="0 5"/>
+                                        <TextBlock>Profile must have...</TextBlock>
+                                        <Grid Margin="0 10">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="20"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="20"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/>
+                                            </Grid.RowDefinitions>
+                                            <TextBlock Style="{StaticResource ListSymbol}"/>
+                                            <TextBlock Style="{StaticResource ListSymbol}" Grid.Column="2"/>
+                                            <TextBlock Style="{StaticResource ListSymbol}" Grid.Row="1"/>
+                                            <TextBlock Style="{StaticResource ListSymbol}" Grid.Row="1" Grid.Column="2"/>
+
+                                            <ToggleButton Name="chkPicture" IsChecked="true" Grid.Column="1" Content="Picture"/>
+                                            <ToggleButton Name="chkBanner" IsChecked="true" Grid.Column="3" Grid.Row="0" Content="Banner"/>
+                                            <ToggleButton Name="chkDescription" IsChecked="true" Grid.Column="1" Grid.Row="1" Content="Description"/>
+                                            <ToggleButton Name="chkLocation" IsChecked="False" Grid.Column="3" Grid.Row="1" Content="Location"/>
+                                        </Grid>
+                                        <TextBlock>Profile must have...</TextBlock>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="20"/>
+                                                <ColumnDefinition Width="auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/>
+                                            </Grid.RowDefinitions>
+                                            <TextBlock Style="{StaticResource ListSymbol}" />
+                                            <TextBlock Style="{StaticResource ListSymbol}" Grid.Row="1"/>
+                                            <TextBlock Style="{StaticResource ListSymbol}" Grid.Row="2"/>
+                                            <uc:LabeledList x:Name="cmbTweetLimit" Grid.Column="1" Label="Tweet Count:" Value="1" ItemList="{Binding TweetCountOption}" Height="40" Width="300" Margin="0 5" />
+                                            <uc:LabeledList x:Name="cmbAgeLimit" Grid.Column="1" Grid.Row="1" Label="Account Age:" Value="2" ItemList="{Binding AccountAgeOption}" Height="40" Margin="0 5" />
+                                            <uc:LabeledList x:Name="cmbLatestLimit" Grid.Column="1" Grid.Row="2" Label="Latest Tweet:" Value="3" ItemList="{Binding LatestTweetOption}" Height="40" Margin="0 5" />
+                                        </Grid>
+                                    </StackPanel>
+                                </ScrollViewer>
+                            </Border>
+                            <Border Background="#e000" CornerRadius="6" Margin="20 20 0 20" Visibility="{Binding IsDrawn, Converter={StaticResource BoolToVisibilityConverter}}">
+                                <TextBlock Style="{DynamicResource Title}" VerticalAlignment="Center" HorizontalAlignment="Center">Already Drawn</TextBlock>
+                            </Border>
+                        </Grid>
+                        
+                    </Grid>
+                    <Button Tag="ToTab2" IsEnabled="{Binding IsBegun, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource BottomBtn}" Grid.Row="2" Click="GotoTab">CONTINUE ▶</Button>
+                </Grid>
+            </TabItem>
+            <TabItem Name="tab2" Header="Step 2 : Entries" IsEnabled="{Binding IsBegun, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                    <Grid Margin="15 0 15 10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0 10">
+                        <uc:PagingGrid x:Name="entryView"/>
+                    </ScrollViewer>
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Button Tag="ToTab1" Style="{StaticResource BottomBtn}" Click="GotoTab">◀ Back</Button>
+                        <Button Tag="ToTab3" Grid.Column="2" Style="{StaticResource BottomBtn}" Click="GotoTab">Next ▶</Button>
+                    </Grid>
+                </Grid>
+            </TabItem>
+            <TabItem Name="tab3" Header="Step 3 : Draw" IsEnabled="{Binding IsBegun, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                <Grid Margin="15">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Border Style="{StaticResource Card}" Margin="0 0 5 0">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Style="{StaticResource Title}">🚩 Actions:</TextBlock>
+                                    <TextBlock Grid.Row="1" Background="{StaticResource bBorder}" Height="2" Margin="0 5"/>
+                                    <Grid Grid.Row="2">
+                                        <Button VerticalAlignment="Center" Style="{StaticResource ActionBtn}" Content="BEGIN DRAW" Click="Draw" />
+                                        <Grid Background="{DynamicResource bDark}" Visibility="{Binding IsDrawn, Converter={StaticResource BoolToVisibilityConverter}}">
+                                            <StackPanel VerticalAlignment="Center">
+                                                <TextBlock Style="{DynamicResource Title}" HorizontalAlignment="Center" Margin="0 10">Drawing Complete!</TextBlock>
+                                                <Button Style="{StaticResource ActionBtn}" Content="Reply with Winner" Click="Reply"/>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                            </Border>
+                            <Border Grid.Column="1" Style="{StaticResource Card}" Margin="5 0 0 0">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Grid.ColumnSpan="2" Style="{StaticResource Title}">📜 Draw Details:</TextBlock>
+                                    <TextBlock Grid.Row="1" Grid.ColumnSpan="2" Background="{StaticResource bBorder}" Height="2" Margin="0 5"/>
+                                    <TextBlock Grid.Row="2" Style="{StaticResource Label}">Status</TextBlock>
+                                    <TextBlock Grid.Row="3" Style="{StaticResource Label}">Entries</TextBlock>
+                                    <TextBlock Grid.Row="4" Style="{StaticResource Label}">Winners</TextBlock>
+                                    <TextBlock Grid.Row="5" Style="{StaticResource Label}">Draw Date</TextBlock>
+                                    <TextBlock Grid.Row="6" Style="{StaticResource Label}">Draw ID</TextBlock>
+
+                                    <TextBlock Grid.Row="2" Grid.Column="1" Style="{StaticResource Value}" Text="{Binding IsDrawn, Converter={StaticResource BoolToCompletedConverted}}"/>
+                                    <TextBlock Grid.Row="3" Grid.Column="1" Style="{StaticResource Value}" Text="{Binding Retweets, Converter={StaticResource CounterCoverter},UpdateSourceTrigger=PropertyChanged}"/>
+                                    <TextBlock Grid.Row="4" Grid.Column="1" Style="{StaticResource Value}" Text="{Binding ElementName=txtWinnerCount, Path=Value}" />
+                                    <TextBlock Grid.Row="5" Grid.Column="1" Style="{StaticResource Value}" Text="{Binding DrawDate, StringFormat={}{0:hh:mm tt ∙ MMM dd, yyyy}}"/>
+                                    <TextBlock Grid.Row="6" Grid.Column="1" Style="{StaticResource Value}" Text="{Binding DrawId}"/>
+                                </Grid>
+                            </Border>
+                            <Border Grid.Row="1" Grid.ColumnSpan="2" Style="{StaticResource Card}" Margin="0 10">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+                                    <Grid>
+                                        <TextBlock Style="{StaticResource Title}">🏆 Drawing Board:</TextBlock>
+                                        <ToggleButton Name="chkShowRejected" HorizontalAlignment="Right" Content="Show Rejected" IsChecked="{Binding ShowRejected, UpdateSourceTrigger=PropertyChanged}" Click="ShowRejectedClick"/>
+                                    </Grid>
+                                    <TextBlock Grid.Row="1" Background="{StaticResource bBorder}" Height="2" Margin="0 5"/>
+                                    <uc:ResultViewer Grid.Row="2" x:Name="resultViewer" ReAction="Reaction"/>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </ScrollViewer>
+                    <Button Grid.Row="1" Tag="ToTab2" Style="{StaticResource BottomBtn}" Click="GotoTab">◀ Back</Button>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>
